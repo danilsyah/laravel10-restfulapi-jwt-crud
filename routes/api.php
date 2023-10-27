@@ -21,7 +21,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::group(['middleware' => ['jwt.verify']], function(){
+    Route::post('/refresh', [AuthController::class,'refresh']);
+    Route::get('/me', [AuthController::class, 'me']);
+});
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/refresh', [AuthController::class,'refresh'])->middleware('jwt.verify');
-Route::get('/me', [AuthController::class, 'me'])->middleware('jwt.auth');
