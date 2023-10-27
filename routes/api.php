@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 // panggil namespace AuthController
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +22,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::group(['middleware' => ['jwt.verify']], function(){
+    Route::post('/refresh', [AuthController::class,'refresh']);
+    Route::get('/me', [AuthController::class, 'me']);
+});
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/refresh', [AuthController::class,'refresh'])->middleware('jwt.verify');
-Route::get('/me', [AuthController::class, 'me'])->middleware('jwt.auth');
+
+// endpoint crud Post
+Route::middleware('jwt.auth')->group(function(){
+    Route::post('/post', [PostController::class, 'store']);
+    Route::get('/posts', [PostController::class, 'index']);
+    Route::get('/posts/{id}', [PostController::class, 'show']);
+    Route::put('/posts/{id}', [PostController::class, 'update']);
+    Route::delete('/posts/{id}', [PostController::class, 'destroy']);
+});
