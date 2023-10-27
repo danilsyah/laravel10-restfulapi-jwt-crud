@@ -50,17 +50,18 @@ class AuthController extends Controller
     }
 
     public function refresh(){
-
+        $token = auth()->refresh();
+        return $this->createNewToken($token);
     }
 
     public function me(){
-
+        return response()->json(auth()->user());
     }
 
     protected function createNewToken($token){
         return response()->json([
             'access_token'=>$token,
-            'token_type'=>'bearer',
+            'token_type'=>'Bearer',
             'expires_in' => auth()->factory()->getTTL() * 60,
             'user' => auth()->user()
         ]);
