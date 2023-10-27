@@ -9,6 +9,7 @@ class Post extends Model
 {
     use HasFactory;
 
+    // field yang boleh di insert/input
     protected $fillable = [
         'user_id',
         'title',

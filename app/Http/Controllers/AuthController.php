@@ -21,7 +21,7 @@ class AuthController extends Controller
 
         // jika ada validasi yang error kita akan berikan pesan error
         if($validator->fails()){
-            return response->json($validator->errors()->toJson(), 400);
+            return response()->json($validator->errors()->toJson(), 400);
         }
 
         // mengambil array data request yang sudah validated
@@ -40,7 +40,13 @@ class AuthController extends Controller
     }
 
     public function login(Request $request){
+        $credentials = $request->only(['email','password']);
 
+        if(!$token = Auth::attempt($credentials)){
+            return response()->json(['message' => 'Wrong credentials'], 401);
+        }
+
+        return $this->createNewToken($token);
     }
 
     public function refresh(){
