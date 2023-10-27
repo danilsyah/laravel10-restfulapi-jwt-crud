@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 // panggil namespace AuthController
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,3 +29,12 @@ Route::group(['middleware' => ['jwt.verify']], function(){
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+// endpoint crud Post
+Route::middleware('jwt.auth')->group(function(){
+    Route::post('/post', [PostController::class, 'store']);
+    Route::get('/posts', [PostController::class, 'index']);
+    Route::get('/posts/{id}', [PostController::class, 'show']);
+    Route::put('/posts/{id}', [PostController::class, 'update']);
+    Route::delete('/posts/{id}', [PostController::class, 'destroy']);
+});
